@@ -1,0 +1,43 @@
+name: Build Detox Loud 1.02 APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Install Android SDK packages
+        run: |
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          "$SDKMANAGER" --install "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Extract project
+        run: unzip -q DETOX_LOUD_1_02_Android_Project.zip
+
+      - name: Build APK
+        run: gradle -p DETOX_LOUD_1_02_Android assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Detox-Loud-1.02-APK
+          path: DETOX_LOUD_1_02_Android/app/build/outputs/apk/debug/app-debug.apk
