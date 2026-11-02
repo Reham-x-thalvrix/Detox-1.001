@@ -1,0 +1,5 @@
+- name: Extract project
+  run: unzip -q DETOX_LOUD_1_02_Android_Project.zip
+
+- name: Build APK
+  run: gradle -p DETOX_LOUD_1_02_Android assembleDebug
